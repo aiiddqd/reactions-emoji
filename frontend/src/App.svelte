@@ -1,9 +1,17 @@
 <script>
+	import { config } from './stores.js';
+
 	let emojies = [
 		{ id: 'like', char: "👍" },
 		{ id: 'dislike', char: "👎" },
 		{ id: 'smile', char: "😂" },
 	];
+
+
+	config.subscribe((value) => {
+
+		console.log(value);
+	});
 </script>
 
 <div class="reactions-emoji-app">
