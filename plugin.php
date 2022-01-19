@@ -13,11 +13,14 @@
 
 namespace ReactionsEmoji\Init;
 
+use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
 use Exception;
 use WP_Error;
 use Throwable;
+
+CONST META_KEY = 'reactions_emoji';
 
 add_action('plugin_loaded', function(){
     add_shortcode('reactions-emoji', function(){
@@ -30,16 +33,52 @@ add_action('plugin_loaded', function(){
 
     add_action('rest_api_init', function(){
 
-        register_rest_route( 'reem/v1', '/reactions/(?P<post_id>.+)', array(
-            'methods'             => 'GET', 'POST',
-            'callback'            => __NAMESPACE__ . '\update_reactions',  // функция обработки запроса. Должна вернуть ответ на запрос
-            'permission_callback' => '__return_true',
-        ));
+        register_rest_route( 'reem/v1', '/reactions/(?P<post_id>\d+)', [
+            [
+                'methods'             => 'GET',
+                'callback'            => __NAMESPACE__ . '\get_reactions',
+                'permission_callback' => '__return_true',
+            ],
+            [
+                'methods' => WP_REST_Server::CREATABLE,
+                'callback'            => __NAMESPACE__ . '\update_reactions',
+                'permission_callback' => '__return_true',
+            ]
+        ]);
     
     });
 
 });
 
+/**
+ * example https://dev.local/wp-json/reem/v1/reactions/5
+ */
+function get_reactions(WP_REST_Request $request){
+
+        try {
+        if( ! $post_id = (int)$request->get_param( 'post_id' )){
+            throw new Exception( "no way )" );
+        }
+        if( ! $post = get_post($post_id)){
+            throw new Exception( "no way )" );
+        }
+    
+        
+        $data = [];
+        $data['success'] = true;
+        $data['meta'] = [];
+        $data['id'] = $post_id;
+
+        if($meta = get_post_meta($post->ID, META_KEY, true)){
+            $data['meta'] = $meta;
+        }
+        // var_dump($meta); exit;
+        
+        return new WP_REST_Response( $data, 200 );
+    } catch( Throwable $e ) {
+        return new WP_Error( "rest_error", 'no way' );
+    }
+}
 
 function update_reactions(WP_REST_Request $request){
 
@@ -51,10 +90,13 @@ function update_reactions(WP_REST_Request $request){
             throw new Exception( "no way )" );
         }
     
+        $value = $request->get_json_params();
+
+        update_post_meta($post->ID, META_KEY, $value);
         $data = [];
         $data['success'] = true;
-        $data['$post'] = $post;
-        $data['id'] = $request->get_param( 'id' );
+        $data['meta'] = $value;
+        $data['id'] = $post_id;
     
         return new WP_REST_Response( $data, 200 );
     } catch( Throwable $e ) {
