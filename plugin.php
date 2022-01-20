@@ -1,13 +1,14 @@
 <?php
 /*
  * Plugin Name: Reactions Emoji
- * Version:     1.0.0
+ * Description: Use emoji and reactions with your content
  * @link https://unicode.org/emoji/charts/full-emoji-list.html
  * @link https://twemoji.twitter.com/ 
  * @link https://www.wired.com/2016/02/facebook-reactions-totally-redesigned-like-button/
  * @link https://svelte.dev/repl/c28366e7572444bd83f5cb265f941d42?version=3.31.0
  * @link https://github.com/iamcal/emoji-data
  * @link https://projects.iamcal.com/emoji-data/table.htm
+ * Version: 0.8
  */
 
 namespace ReactionsEmoji\Init;
