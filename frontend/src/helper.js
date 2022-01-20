@@ -1,12 +1,3 @@
-
-let restBaseUrl = 'https://dev.local/wp-json/';
-
-export function getRestUrl(path = '') {
-    path = path.startsWith('/') ? path.slice(1) : path;
-    return restBaseUrl + path;
-  }
-  
-
 export async function remoteRequest(url, args = {}) {
     // requestInProgress.set(true);
     let data = [];

@@ -1,8 +1,18 @@
 import App from './App.svelte';
 
-let targetEl = document.querySelector('.reactions-emoji');
-const app = new App({
-	target: targetEl
-});
+let items = document.querySelectorAll('.reactions-emoji');
 
-export default app;
+
+items.forEach(el => {
+	let id = el.getAttribute('data-id');
+	let meta = JSON.parse(el.getAttribute('data-meta'));
+
+
+	new App({
+		target: el,
+		props: {
+			id: id,
+			meta: meta,
+		}
+	});
+});

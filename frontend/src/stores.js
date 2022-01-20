@@ -1,19 +1,11 @@
 import { writable } from 'svelte/store';
 
-export let config = writable({}, function start(set) {
-    let _config = {
-        'baseRestApi': 'https://dev.local/wp-json/',
-        'endpoint': 'reem/v1/reactions/',
-    };
-    set(_config);
-
-});
 
 export let _reactionsData = writable({}, function start(set) {
 
     if(typeof reactionsData === "undefined"){
-        let list = {
-            'id': 5,
+        let data = {
+            'restBaseUrl': "https://dev.local/wp-json/reem/v1/reactions/",
             'emojiList': [
                 {
                     "id": "like",
@@ -37,7 +29,7 @@ export let _reactionsData = writable({}, function start(set) {
                 }
             ]
         };
-        set(list);
+        set(data);
     } else {
         set(reactionsData);
     }

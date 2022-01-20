@@ -1,13 +1,14 @@
 <?php
 /*
  * Plugin Name: Reactions Emoji
- * Version:     1.0.0
+ * Description: Use emoji and reactions with your content
  * @link https://unicode.org/emoji/charts/full-emoji-list.html
  * @link https://twemoji.twitter.com/ 
  * @link https://www.wired.com/2016/02/facebook-reactions-totally-redesigned-like-button/
  * @link https://svelte.dev/repl/c28366e7572444bd83f5cb265f941d42?version=3.31.0
  * @link https://github.com/iamcal/emoji-data
  * @link https://projects.iamcal.com/emoji-data/table.htm
+ * Version: 0.8
  */
 
 namespace ReactionsEmoji\Init;
@@ -20,10 +21,22 @@ use WP_Error;
 use Throwable;
 
 const META_KEY = 'reactions_emoji';
+const REST_NAMESPACE = 'reem/v1';
+const REST_ENDPOINT = '/reactions/';
 
 add_action('plugin_loaded', function () {
-    add_shortcode('reactions-emoji', function () {
-        $content = '<div class="reactions-emoji"></div>';
+    add_shortcode('reactions-emoji', function ($atts) {
+
+        if( ! $post = get_post()){
+            return 'no post';
+        }
+
+        $data = [
+            'id' => $post->ID,
+            'meta' => json_encode(get_meta($post->ID)),
+        ];
+
+        $content = sprintf('<div class="reactions-emoji" data-id=%s data-meta=%s></div>', $data['id'], '\'' . $data['meta'] . '\'');
         return $content;
     });
 
@@ -75,7 +88,7 @@ function get_reactions(WP_REST_Request $request)
         $data['meta'] = [];
         $data['id'] = $post_id;
 
-        if ($meta = get_post_meta($post->ID, META_KEY, true)) {
+        if ( $meta = get_meta($post->ID) ) {
             $data['meta'] = $meta;
         }
 
@@ -83,6 +96,20 @@ function get_reactions(WP_REST_Request $request)
     } catch (Throwable $e) {
         return new WP_Error("rest_error", 'no way');
     }
+}
+
+function get_meta($post_id){
+    $meta = get_post_meta($post_id, META_KEY, true);
+    $list = get_emojies_list();
+
+    if(empty($meta)){
+        $meta = [];
+        foreach($list as $key => $item){
+            $meta[$item['id']] = 0;
+        }
+    } 
+    
+    return $meta;
 }
 
 function update_reactions(WP_REST_Request $request)
@@ -108,7 +135,7 @@ function update_reactions(WP_REST_Request $request)
             $meta = [];
         }
         if(empty((int)$meta[$action])){
-            $meta[$action] = 1;
+            $meta[$action] = 0;
         }
         $meta[$action]++;
         update_post_meta($post->ID, META_KEY, $meta);
@@ -125,22 +152,26 @@ function update_reactions(WP_REST_Request $request)
 
 function assets()
 {
-    if(! $post = get_post()){
-        return;
-    }
 
+    
     $file_path = '/frontend/public/build/bundle.js';
     $file_path_abs = __DIR__ . $file_path;
     $file_url = plugins_url($file_path, __FILE__);
 
     wp_enqueue_script('reactions-emoji', $file_url, [], filemtime($file_path_abs), true);
 
-    $list = get_emojies_list();
+    $file_path = '/frontend/public/build/bundle.css';
+    $file_path_abs = __DIR__ . $file_path;
+    $file_url = plugins_url($file_path, __FILE__);
+    wp_enqueue_style( 'reactions-emoji-style', $file_url, [], filemtime($file_path_abs) );
+
+
     $data = [
-        'id' => $post->ID,
-        'emojiList' => $list
+        'restBaseUrl' => rest_url(REST_NAMESPACE . REST_ENDPOINT),
+        'emojiList' => get_emojies_list(),
     ];
-    wp_localize_script( 'reactions-emoji', 'reactionsData', $list);
+
+    wp_localize_script( 'reactions-emoji', 'reactionsData', $data);
 
 }
 

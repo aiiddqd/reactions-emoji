@@ -1,86 +1,84 @@
 <script>
-	import { onMount } from 'svelte';
-	import { config, _reactionsData } from './stores.js';
-	import { remoteRequest } from './helper';
+  import { onMount } from "svelte";
+  import { _reactionsData } from "./stores.js";
+  import { remoteRequest } from "./helper";
 
-	let emojiList = [];
-	let id;
-	_reactionsData.subscribe((value) => {
-		// console.log(value);
-		emojiList = value.emojiList;
-		id = value.id;
-	});
+  let emojiList = [];
+  export let id;
+  export let meta;
+  _reactionsData.subscribe((value) => {
+    console.log(value);
+    emojiList = value.emojiList;
+    // id = value.id;
+  });
 
-	onMount(() => {
-		let url = getRequestUrlById(id);
-		
-		remoteRequest(url).then(value => {
-			// console.log();
-			let list = value.json.meta;
-			Object.keys(list).forEach(key => {
-				// console.log(key, list[key]);
-				emojiList.forEach((element, index) => {
-					if(element.id == key){
-						emojiList[index].count = list[key];
-					}
-					// console.log(index, element);
+  onMount(() => {
+    // console.log(id, meta);
+	renderCount(meta);
+  });
 
-				});
-			});
-			// console.log(emojiList);
-		});
-	});
+  function renderCount(meta) {
+    let list = meta;
+    Object.keys(list).forEach((key) => {
+      // console.log(key, list[key]);
+      emojiList.forEach((element, index) => {
+        if (element.id == key) {
+          emojiList[index].count = list[key];
+        }
+        // console.log(index, element);
+      });
+    });
+  }
 
-	function getRequestUrlById(id){
-		let url = $config.baseRestApi + $config.endpoint;
-		return url + id;
+  function getRequestUrlById(id) {
+    let url = $_reactionsData.restBaseUrl;
+    return url + id;
+  }
+
+  function handleClick(e) {
+    let data = {
+      action: e.target.getAttribute('data-action')
+    };
+
+	if(data.action == undefined){
+		data.action = e.target.parentElement.getAttribute('data-action')
 	}
+    // console.log(data);
 
-	function handleClick(e){
-		let data = {
-			"action": e.target.dataset.action
-		};
+    let url = getRequestUrlById(id);
 
-		let url = getRequestUrlById(id);
+    let args = {
+      method: "POST",
+      body: JSON.stringify(data),
+    };
 
-		console.log(url, data);
-		let args = {
-			'method': 'POST',
-			"body": JSON.stringify(data)
-		};
-
-		remoteRequest(url, args).then(value => {
-			console.log(value);
-			let list = value.json.meta;
-			Object.keys(list).forEach(key => {
-				// console.log(key, list[key]);
-				emojiList.forEach((element, index) => {
-					if(element.id == key){
-						emojiList[index].count = list[key];
-					}
-					// console.log(index, element);
-
-				});
-			});
-		});
-	}
+    remoteRequest(url, args).then((value) => {
+      console.log(value);
+	  renderCount(value.json.meta);
+	  
+    });
+  }
 </script>
 
 <div class="reactions-emoji-app">
-	{#each emojiList as item}
-		<button data-action="{item.id}" on:click={handleClick}>
-		<span class="reactions-emoji-app--char">{item.char}</span>
-		{#if item.count}
-		<span class="reactions-emoji-app--count">{item.count}</span>
-		{/if}
-		</button>
-	{/each}
-
+  {#each emojiList as item}
+    <button data-action={item.id} on:click|once={handleClick}>
+      {item.char}
+      {#if item.count}
+        <span class="reactions-emoji-app--count">{item.count}</span>
+      {/if}
+    </button>
+  {/each}
 </div>
 
 <style>
-	button {
-		background: transparent;
-		border: none;
-	}
+  button {
+    background: transparent;
+    border: none;
+	z-index: 1;
+  }
+
+  .reactions-emoji-app--count {
+	  z-index: -1;
+  }
 </style>
