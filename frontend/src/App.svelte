@@ -75,10 +75,13 @@
   button {
     background: transparent;
     border: none;
-	z-index: 1;
+	  z-index: 1;
+    font-size: 1.2rem;
   }
 
   .reactions-emoji-app--count {
 	  z-index: -1;
+    opacity: 0.5;
+    font-size: 0.8rem;
   }
 </style>
