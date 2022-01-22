@@ -6,6 +6,7 @@
  * Version: 0.9
  */
 
+ 
 namespace ReactionsEmoji\Init;
 
 use WP_REST_Server;
