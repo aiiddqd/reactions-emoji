@@ -74,10 +74,25 @@
 <style>
   button {
     background: transparent;
-    border: none;
+    border: solid 2px;
+    border-color: transparent;
+    border-radius: 5px;
 	  z-index: 1;
     font-size: 1.2rem;
   }
+
+  button:hover {
+    /* background-color: ; */
+    border-color: #f7f7f7;
+
+    position: relative;
+    top: -1px;
+  }
+
+  button:focus{ 
+    background-color: #f7f7f7;
+  }
+
 
   .reactions-emoji-app--count {
 	  z-index: -1;
