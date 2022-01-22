@@ -1,10 +1,10 @@
 <?php
 /*
  * Plugin Name: Reactions Emoji
- * Description: Use emoji and reactions with your content on WordPress sites
+ * Description: Use emoji and reactions with your content on WordPress sites by shortcode [reactions-emoji]
  * GitHub Plugin URI: https://github.com/uptimizt/reactions-emoji
  * Primary Branch: main
- * Version: 0.9.1
+ * Version: 1.0
  */
 
 
