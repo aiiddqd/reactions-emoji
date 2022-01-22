@@ -3,10 +3,11 @@
  * Plugin Name: Reactions Emoji
  * Description: Use emoji and reactions with your content on WordPress sites
  * GitHub Plugin URI: https://github.com/uptimizt/reactions-emoji
- * Version: 0.9
+ * Primary Branch: main
+ * Version: 0.9.1
  */
 
- 
+
 namespace ReactionsEmoji\Init;
 
 use WP_REST_Server;
