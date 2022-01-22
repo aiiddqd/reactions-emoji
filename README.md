@@ -1,6 +1,10 @@
 # reactions-emoji
 
 
+demo https://bizzapps.ru/b/gist/
+
+
+
 ## manual add
 
 add shortcode to post `[reactions-emoji]`
