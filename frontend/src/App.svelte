@@ -91,6 +91,8 @@
 
   button:focus{ 
     background-color: #f7f7f7;
+    position: relative;
+    top: -2px;
   }
 
 
