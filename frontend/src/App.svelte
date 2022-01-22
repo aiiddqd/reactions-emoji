@@ -82,7 +82,7 @@
   }
 
   button:hover {
-    /* background-color: ; */
+    background-color: #f7f7f7;
     border-color: #f7f7f7;
 
     position: relative;
