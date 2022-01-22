@@ -3,6 +3,7 @@
 
 ## manual add
 
+add shortcode to post `[reactions-emoji]`
 
 ## auto add
 
