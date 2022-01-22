@@ -4,7 +4,7 @@
  * Description: Use emoji and reactions with your content on WordPress sites by shortcode [reactions-emoji]
  * GitHub Plugin URI: https://github.com/uptimizt/reactions-emoji
  * Primary Branch: main
- * Version: 1.0
+ * Version: 1.0.1
  */
 
 
