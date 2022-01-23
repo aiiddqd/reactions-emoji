@@ -1,7 +1,7 @@
 # Reactions wity Emoji, WordPress, SvelteJS
 
 - roadmap https://github.com/uptimizt/reactions-emoji/issues/1
-- concepts https://github.com/uptimizt/reactions-emoji/issues/2
+- prototypes https://github.com/uptimizt/reactions-emoji/issues/2
 
 # demo
 
